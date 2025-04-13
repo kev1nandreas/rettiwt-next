@@ -1,49 +1,32 @@
-// import { jwtVerify } from "jose";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { ENV } from "./configs/environment";
 import { PATH } from "./shared/path";
-
-const TOKEN_KEY = ENV.TOKEN_KEY;
-// const JWT_SECRET = ENV.JWT_SCREET;
+import { ENV } from "./configs/environment";
 
 export async function middleware(request: NextRequest) {
-	const token = request.cookies.get(TOKEN_KEY);
-	console.log({ token });
+  // Skip middleware for RSC requests
+  if (
+    request.headers.get("RSC") === "1" ||
+    request.headers.get("Next-Router-State-Tree") ||
+    request.headers.get("Next-Router-Prefetch")
+  ) {
+    return NextResponse.next();
+  }
 
-	// Cek apakah user sudah berada di halaman "not found" untuk menghindari redirect loop
-	if (request.nextUrl.pathname === PATH.NOT_FOUND) {
-		return NextResponse.next();
-	}
+  const pathname = request.nextUrl.pathname;
+  const token = request.cookies.get(ENV.TOKEN_KEY)?.value;
 
-	// Jika token tidak ada, tampilkan halaman "not found" tanpa redirect loop
-	if (!token) {
-		return NextResponse.rewrite(new URL(PATH.NOT_FOUND, request.url));
-	}
+  if (pathname.startsWith(PATH.AUTH.LOGIN) && token) {
+    return NextResponse.redirect(new URL(PATH.HOME, request.url));
+  }
 
-	try {
-		// Verifikasi token JWT
-		// const secret = new TextEncoder().encode(JWT_SECRET);
-		// const { payload } = await jwtVerify(token.value, secret, {
-		// 	algorithms: ["HS256"],
-		// });
+  if (pathname.startsWith(PATH.HOME) && !token) {
+    return NextResponse.redirect(new URL(PATH.AUTH.LOGIN, request.url));
+  }
 
-		// Cek apakah token sudah kedaluwarsa
-		// const currentTime = Math.floor(Date.now() / 1000);
-		// if (payload.exp && payload.exp < currentTime) {
-		// 	request.cookies.delete(TOKEN_KEY);
-		// 	return NextResponse.rewrite(new URL(PATH.NOT_FOUND, request.url));
-		// }
-
-		// Jika token valid, lanjutkan ke halaman tujuan
-		return NextResponse.next();
-	} catch {
-		// Hapus token jika verifikasi gagal dan tampilkan halaman "not found"
-		request.cookies.delete(TOKEN_KEY);
-		return NextResponse.rewrite(new URL(PATH.NOT_FOUND, request.url));
-	}
+  return NextResponse.next();
 }
 
 export const config = {
-	matcher: ["/guard/:path*", "/contact"],
+  matcher: ['/', '/auth/:path*', '/guard/:path*'],
 };
