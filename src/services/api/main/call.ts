@@ -43,10 +43,10 @@ export async function get<T>(
 
 export async function post<T>(
 	url: string,
-	data: Record<string, unknown>,
+	formData: FormData,
 ): Promise<Res<T>> {
 	try {
-		const response: AxiosResponse<T> = await api.post(url, data);
+		const response: AxiosResponse<T> = await api.post(url, formData);
 		return {
 			OK: true,
 			StatusCode: response.status,

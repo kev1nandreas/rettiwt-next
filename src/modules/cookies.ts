@@ -10,7 +10,7 @@ interface CookiesProps {
 }
 
 export async function createCookies(props: CookiesProps) {
-	(await cookies()).set(props?.name, props?.data, { secure: true });
+	(await cookies()).set(props?.name, props?.data, { secure: true, maxAge: 60 * 60 * 24 });
 }
 
 export async function getCookies(name: CookiesProps["name"]) {

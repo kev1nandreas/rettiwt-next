@@ -20,9 +20,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(PATH.HOME, request.url));
   }
 
-  if (pathname.startsWith(PATH.HOME) && !token) {
-    return NextResponse.redirect(new URL(PATH.AUTH.LOGIN, request.url));
-  }
+  // if (pathname.startsWith(PATH.HOME) && !token) {
+  //   return NextResponse.redirect(new URL(PATH.AUTH.LOGIN, request.url));
+  // }
 
   return NextResponse.next();
 }
