@@ -18,4 +18,9 @@ export const defaultSEOConfig = {
             },
         ],
     },
+    twitter: {
+        handle: "@rettiwt",
+        site: "@rettiwt",
+        cardType: "summary_large_image",
+    },
 }
