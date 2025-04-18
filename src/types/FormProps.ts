@@ -14,3 +14,9 @@ export type RegisterProps = {
   password: string;
   confirmPassword: string;
 };
+
+export type UpdateProfileProps = {
+  name: string;
+  bio: string;
+  image: File
+};

@@ -2,33 +2,36 @@
 
 import { useFetchProfileInfo } from "@/app/(main)/api/useProfile";
 import MenuSidebar from "@/components/MenuSidebar";
-import { useSetUsername } from "@/lib/utils";
+import { ENV } from "@/configs/environment";
+import { useSetPicture, useSetUsername } from "@/lib/utils";
 import { typecastProfileResponse } from "@/types/response";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
-import { FaUserFriends } from "react-icons/fa";
-import {
-  MdOutlineRssFeed,
-  MdEvent,
-  MdOutlineBookmark,
-  MdOutlineSettings,
-} from "react-icons/md";
+import { FaRegHeart, FaUserFriends } from "react-icons/fa";
+import { MdOutlineRssFeed, MdEvent, MdOutlineSettings } from "react-icons/md";
 
 export default function Sidebar() {
   const { data } = useFetchProfileInfo();
   const profile = typecastProfileResponse(data?.data);
   const setUsername = useSetUsername();
+  const setPicture = useSetPicture();
   const router = useRouter();
 
-  setUsername(profile?.username || "");
+  useEffect(() => {
+    if (profile) {
+      setUsername(profile.username);
+      setPicture(profile.image_url || "");
+    }
+  }, [profile, setUsername, setPicture]);
 
   const menuItems = [
     { menu: "Feed", icon: MdOutlineRssFeed, redirect: "/" },
-    { menu: "Friends", icon: FaUserFriends, redirect: "/" },
-    { menu: "Events", icon: MdEvent, redirect: "/" },
-    { menu: "Saved", icon: MdOutlineBookmark, redirect: "/i/bookmarked" },
-    { menu: "Settings", icon: MdOutlineSettings, redirect: "/" },
+    { menu: "Friends", icon: FaUserFriends, redirect: "/i/friends" },
+    { menu: "Events", icon: MdEvent, redirect: "/i/events" },
+    { menu: "Liked", icon: FaRegHeart, redirect: "/i/liked" },
+    { menu: "Settings", icon: MdOutlineSettings, redirect: "/i/settings" },
     { menu: "Profile", icon: CgProfile, redirect: `/${profile?.username}` },
   ];
 
@@ -41,14 +44,25 @@ export default function Sidebar() {
           router.push(`/${profile?.username}`);
         }}
       >
-        <Image
-          src={"/female-ava.png"}
-          alt={"avatar"}
-          width={100}
-          height={100}
-          draggable={false}
-          className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
-        />
+        {profile?.image_url ? (
+          <Image
+            src={ENV.URI.BASE_IMAGE_URL + profile?.image_url}
+            alt={profile?.image_url || ""}
+            width={100}
+            height={100}
+            draggable={false}
+            className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+          />
+        ) : (
+          <Image
+            src={"/female-ava.png"}
+            alt={"avatar"}
+            width={100}
+            height={100}
+            draggable={false}
+            className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+          />
+        )}
         <div className="md:flex justify-center flex-col hidden">
           <p className="font-semibold text-sm">
             {profile?.name && profile.name.length > 20

@@ -75,10 +75,14 @@ export async function put<T>(
 
 export async function patch<T>(
 	url: string,
-	data: Record<string, unknown>,
+	formData: FormData,
 ): Promise<Res<T>> {
 	try {
-		const response: AxiosResponse<T> = await api.patch(url, data);
+		const response: AxiosResponse<T> = await api.patch(url, formData, {
+			headers: {
+				"Content-Type": "multipart/form-data",
+			},
+		});
 		return {
 			OK: true,
 			StatusCode: response.status,

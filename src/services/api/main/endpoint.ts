@@ -12,5 +12,10 @@ export const MAIN_ENDPOINT = {
 	Tweet: {
 		GetTweet: "/post",
 		GetTweetById: "/post/:id",
+		GetTweetByUsername: "/user/:username/posts",
+	},
+	Like: {
+		setLike: "/likes/:postId",
+		removeLike: "/likes/:postId",
 	},
 };
