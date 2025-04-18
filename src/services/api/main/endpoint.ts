@@ -4,4 +4,13 @@ export const MAIN_ENDPOINT = {
 		CurrentUser: "/user/me",
 		Register: "/user/register",
 	},
+	Profile: {
+		GetProfile: "/user/me",
+		UpdateProfile: "/user/update",
+		GetProfileByUsername: "/user/:username",
+	},
+	Tweet: {
+		GetTweet: "/post",
+		GetTweetById: "/post/:id",
+	},
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type PaginationType = {
   Total: number;
   Limit: number;
@@ -14,11 +15,37 @@ export type ResponseMeta<T> = {
   };
 };
 
+interface ProfileResponse {
+  id: string;
+  name: string;
+  username: string;
+  image_url: string | null;
+  bio: string | null;
+}
+
+interface TweetResponse {
+  id: number;
+  text: string;
+  total_likes: number;
+  parent_id: string | null;
+  is_deleted: boolean;
+  user: ProfileResponse;
+}
+
 export interface LoginResponse {
   token: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function typecastLoginResponse(data: any): LoginResponse | undefined {
   return data as LoginResponse | undefined;
+}
+
+export function typecastProfileResponse(
+  data: any
+): ProfileResponse | undefined {
+  return data as ProfileResponse | undefined;
+}
+
+export function typecastTweetResponse(data: any): TweetResponse[] | undefined {
+  return data as TweetResponse[] | undefined;
 }

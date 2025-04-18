@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { setUsername } from "@/shared/toolkit/slice/username_slice";
 import { type ClassValue, clsx } from "clsx";
+import { useDispatch, useSelector } from "react-redux";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parseFormData(data: any) {
   const formData = new FormData();
   for (const key in data) {
@@ -13,3 +15,15 @@ export function parseFormData(data: any) {
   }
   return formData;
 }
+
+export const useUsername = () => {
+  const username = useSelector((state: any) => state.username.Username);
+  return username;
+};
+
+export const useSetUsername = () => {
+  const dispatch = useDispatch();
+  return (username: string) => {
+    dispatch(setUsername(username));
+  };
+};
