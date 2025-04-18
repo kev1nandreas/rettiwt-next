@@ -15,7 +15,7 @@ export default function Register() {
 
   const mutation = useRegister({
     onSuccess: () => {
-      toast.success("Account created successfully!");
+      toast.success("Tweet created successfully!");
       router.push("/login");
     },
     onError: (error) => {
@@ -30,7 +30,7 @@ export default function Register() {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="w-[60%] h-screen">
+      <div className="w-[60%] h-screen md:block hidden">
         <Image
           src={"/loginbg.png"}
           alt={"Login BG"}
@@ -40,7 +40,7 @@ export default function Register() {
           priority
         ></Image>
       </div>
-      <div className="w-[40%] h-screen flex flex-col items-center justify-center">
+      <div className="w-full md:w-[40%] h-screen flex flex-col items-center justify-center">
         <div className="w-[70%]">
           <h1 className="text-4xl font-bold">Be The Part Of Us!</h1>
           <p className="my-2 text-lg mb-10">
@@ -54,7 +54,7 @@ export default function Register() {
                 id={"name"}
                 label={"Full Name"}
                 validation={{
-                  required: "Name is required",
+                  required: "Full name is required",
                   minLength: {
                     value: 3,
                     message: "Full name must be at least 3 characters long",

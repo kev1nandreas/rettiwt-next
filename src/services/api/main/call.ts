@@ -59,10 +59,10 @@ export async function post<T>(
 
 export async function put<T>(
 	url: string,
-	data: Record<string, unknown>,
+	formData: FormData,
 ): Promise<Res<T>> {
 	try {
-		const response: AxiosResponse<T> = await api.put(url, data);
+		const response: AxiosResponse<T> = await api.put(url, formData);
 		return {
 			OK: true,
 			StatusCode: response.status,

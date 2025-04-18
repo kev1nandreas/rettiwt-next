@@ -21,7 +21,7 @@ export const useRegister = ({
       }
       return Kind;
     },
-    mutationKey: ["login"],
+    mutationKey: ["register"],
     onSuccess,
     onError,
   });

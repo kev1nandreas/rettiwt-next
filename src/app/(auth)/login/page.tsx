@@ -30,7 +30,7 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center h-screen">
-      <div className="w-[60%] h-screen">
+      <div className="w-[60%] h-screen md:block hidden">
         <Image
           src={"/loginbg.png"}
           alt={"Login BG"}
@@ -40,7 +40,7 @@ export default function Home() {
           priority
         ></Image>
       </div>
-      <div className="w-[40%] h-screen flex flex-col items-center justify-center">
+      <div className="w-full md:w-[40%] h-screen flex flex-col items-center justify-center">
         <div className="w-[70%]">
           <h1 className="text-4xl font-bold">Welcome Back!</h1>
           <p className="my-2 text-lg mb-10">
