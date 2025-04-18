@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { setPicture } from "@/shared/toolkit/slice/picture_slice";
 import { setUsername } from "@/shared/toolkit/slice/username_slice";
 import { type ClassValue, clsx } from "clsx";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,7 +17,7 @@ export function parseFormData(data: any) {
   return formData;
 }
 
-export const useUsername = () => {
+export const useGetUsername = () => {
   const username = useSelector((state: any) => state.username.Username);
   return username;
 };
@@ -25,5 +26,17 @@ export const useSetUsername = () => {
   const dispatch = useDispatch();
   return (username: string) => {
     dispatch(setUsername(username));
+  };
+};
+
+export const useGetPicture = () => {
+  const picture = useSelector((state: any) => state.picture.Picture);
+  return picture;
+};
+
+export const useSetPicture = () => {
+  const dispatch = useDispatch();
+  return (picture: string) => {
+    dispatch(setPicture(picture));
   };
 };

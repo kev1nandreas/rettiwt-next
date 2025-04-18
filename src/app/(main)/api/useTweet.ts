@@ -21,6 +21,26 @@ export const useFetchTweet = (onSuccess?: () => void, onError?: () => void) => {
   }) as any;
 };
 
+export const useFetchTweetbyUsername = (
+  username: string,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
+  return useQuery({
+    queryFn: async () => {
+      const { Kind, OK } = await get(MAIN_ENDPOINT.Tweet.GetTweetByUsername.replace(":username", username));
+      if (!OK) {
+        throw new Error(
+          (Kind as { message: string }).message ||
+            (Kind as { Message: string }).Message
+        );
+      }
+      return Kind;
+    },
+    queryKey: ["fetch.tweets.byUsername", username],
+  }) as any;
+};
+
 export const useNewTweet = ({
   onSuccess,
   onError,
@@ -43,7 +63,7 @@ export const useNewTweet = ({
     onSuccess,
     onError,
   });
-}
+};
 
 export const useUpdateTweet = ({
   id,
@@ -56,7 +76,10 @@ export const useUpdateTweet = ({
 }) => {
   return useMutation({
     mutationFn: async (body: FormData) => {
-      const { Kind, OK } = await put(MAIN_ENDPOINT.Tweet.GetTweet + "/" + id, body);
+      const { Kind, OK } = await put(
+        MAIN_ENDPOINT.Tweet.GetTweet + "/" + id,
+        body
+      );
       if (!OK) {
         throw new Error(
           (Kind as { message: string }).message ||
