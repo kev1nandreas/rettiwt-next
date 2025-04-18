@@ -50,7 +50,7 @@ export default function MainSection() {
               width={100}
               height={100}
               draggable={false}
-              className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+              className="md:w-[2.5rem] md:h-[2.5rem] hidden md:block rounded-full md:m-2 pointer-events-none select-none"
             />
           ) : (
             <Image
@@ -59,7 +59,7 @@ export default function MainSection() {
               width={100}
               height={100}
               draggable={false}
-              className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+              className="md:w-[2.5rem] md:h-[2.5rem] hidden md:block rounded-full md:m-2 pointer-events-none select-none"
             />
           )}
 
@@ -109,11 +109,9 @@ export default function MainSection() {
               !tweet.is_deleted && (
                 <PostCard
                   key={tweet.id}
-                  date={"13-4-35"}
                   content={tweet.text}
                   like={tweet.total_likes}
                   id={tweet.id}
-                  isSaved={false}
                   name={tweet.user.name}
                   username={tweet.user.username}
                   picture_url={tweet.user.image_url || ""}

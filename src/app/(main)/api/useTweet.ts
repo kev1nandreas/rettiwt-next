@@ -28,7 +28,9 @@ export const useFetchTweetbyUsername = (
 ) => {
   return useQuery({
     queryFn: async () => {
-      const { Kind, OK } = await get(MAIN_ENDPOINT.Tweet.GetTweetByUsername.replace(":username", username));
+      const { Kind, OK } = await get(
+        MAIN_ENDPOINT.Tweet.GetTweetByUsername.replace(":username", username)
+      );
       if (!OK) {
         throw new Error(
           (Kind as { message: string }).message ||
@@ -38,6 +40,28 @@ export const useFetchTweetbyUsername = (
       return Kind;
     },
     queryKey: ["fetch.tweets.byUsername", username],
+  }) as any;
+};
+
+export const useFetchTweetbyId = (
+  id: string,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
+  return useQuery({
+    queryFn: async () => {
+      const { Kind, OK } = await get(
+        MAIN_ENDPOINT.Tweet.GetTweetById.replace(":id", id.toString())
+      );
+      if (!OK) {
+        throw new Error(
+          (Kind as { message: string }).message ||
+            (Kind as { Message: string }).Message
+        );
+      }
+      return Kind;
+    },
+    queryKey: ["fetch.tweets.byId", id],
   }) as any;
 };
 

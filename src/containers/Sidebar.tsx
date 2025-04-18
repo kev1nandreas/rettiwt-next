@@ -24,7 +24,7 @@ export default function Sidebar() {
       setUsername(profile.username);
       setPicture(profile.image_url || "");
     }
-  }, [profile, setUsername, setPicture]);
+  }, [profile, setUsername, setPicture, data]);
 
   const menuItems = [
     { menu: "Feed", icon: MdOutlineRssFeed, redirect: "/" },

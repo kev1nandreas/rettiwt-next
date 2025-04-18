@@ -18,8 +18,8 @@ export default function ProfileHeader() {
   const [isSettingOpen, setIsSettingOpen] = useState(false);
 
   return (
-    <div className="relative p-[3rem] px-[4rem] flex gap-10 w-full h-fit max-h-fit flex-1 border-[1px] border-slate-300 rounded-xl items-center bg-gradient-to-b from-slate-50 to-slate-200">
-      <div className="flex items-center justify-center w-32 h-32 rounded-full">
+    <div className="relative p-[2rem] md:p-[3rem] md:px-[4rem] flex gap-10 w-full h-fit max-h-fit flex-1 border-[1px] border-slate-300 rounded-xl items-center bg-gradient-to-b from-slate-50 to-slate-200">
+      <div className="md:flex items-center justify-center w-32 h-32 rounded-full hidden">
         {profile?.image_url ? (
           <Image
             src={
@@ -63,7 +63,7 @@ export default function ProfileHeader() {
           }}
         >
           <MdOutlineSettings />
-          <p className="text-sm font-semibold ">Edit Profile</p>
+          <p className="text-sm font-semibold hidden md:block">Edit Profile</p>
         </button>
       )}
 

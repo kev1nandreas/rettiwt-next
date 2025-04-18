@@ -64,6 +64,7 @@ export default function FormUpdatePost({
       <div
         className="bg-white w-full max-w-[40rem] p-4 shadow-lg rounded-2xl"
         ref={divRef}
+        onClick={(e) => e.stopPropagation()}
       >
         <h3 className="border-b-[1px] border-slate-300 pb-2 text-lg font-bold">
           Edit Your Post

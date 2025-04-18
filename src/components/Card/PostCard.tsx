@@ -2,8 +2,7 @@
 
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { BiLike, BiSolidLike } from "react-icons/bi";
-import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
-import { MdModeEditOutline } from "react-icons/md";
+import { MdModeEditOutline, MdOutlineComment } from "react-icons/md";
 import { MdDeleteOutline } from "react-icons/md";
 import { useState, useRef, useEffect } from "react";
 import FormUpdatePost from "../Form/FormUpdatePost";
@@ -18,13 +17,12 @@ import { useGetUsername } from "@/lib/utils";
 import { useParams, useRouter } from "next/navigation";
 import { useDeleteLike, useSetLike } from "@/app/(main)/api/useLike";
 import { ENV } from "@/configs/environment";
+import FormReply from "../Form/FormReply";
 
 interface PostCardProps {
-  date: string;
   content: string;
   like: number;
   id: number;
-  isSaved: boolean;
   name: string;
   username: string;
   picture_url?: string;
@@ -34,15 +32,14 @@ export default function PostCard({
   content,
   like,
   id,
-  isSaved,
   name,
   username,
   picture_url,
 }: PostCardProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
-  const [isShowSaved, setIsShowSaved] = useState(isSaved);
   const [edit, setEdit] = useState<number | null>(null);
   const savedUsername = useGetUsername();
   const { refetch: refetchAll } = useFetchTweet();
@@ -96,7 +93,8 @@ export default function PostCard({
     setIsOpen(false);
   };
 
-  const handleLike = () => {
+  const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
     if (like > 0) {
       unlikeTweet.mutateAsync();
     } else {
@@ -123,12 +121,18 @@ export default function PostCard({
   }, [isOpen]);
 
   return (
-    <div className="flex flex-col w-full p-3 rounded-lg bg-white">
+    <div
+      className="flex flex-col w-full p-3 px-6 rounded-lg bg-white cursor-pointer"
+      onClick={() => router.push("/status/" + id)}
+    >
       {/* Info Sender */}
       <div className="flex justify-between items-center">
         <div
-          className="flex align-center cursor-pointer"
-          onClick={() => router.push("/" + username)}
+          className="flex align-center cursor-pointer gap-2"
+          onClick={(e) => {
+            e.stopPropagation();
+            router.push("/" + username);
+          }}
         >
           {picture_url ? (
             <Image
@@ -137,7 +141,7 @@ export default function PostCard({
               width={100}
               height={100}
               draggable={false}
-              className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+              className="w-[2.5rem] h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
             />
           ) : (
             <Image
@@ -146,7 +150,7 @@ export default function PostCard({
               width={100}
               height={100}
               draggable={false}
-              className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+              className="w-[2.5rem] h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
             />
           )}
           <div className="flex justify-center flex-col">
@@ -161,13 +165,17 @@ export default function PostCard({
             {/* Button Open */}
             <HiOutlineDotsHorizontal
               className="text-2xl cursor-pointer mr-3"
-              onClick={() => setIsOpen(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOpen(true);
+              }}
             />
 
             {isOpen && (
               <div
                 className="absolute top-0 right-0 text-left bg-gray-50 rounded-lg p-2 flex flex-col gap-2 z-10 w-[8rem] border-[1px] border-slate-200"
                 ref={divRef}
+                onClick={(e) => e.stopPropagation()}
               >
                 <div
                   className="flex gap-2 items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
@@ -210,14 +218,20 @@ export default function PostCard({
       <div className="flex border-t-[1px] border-slate-200 justify-evenly p-2 mt-2">
         <button
           className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
-          onClick={() => handleLike()}
+          onClick={(e) => handleLike(e)}
         >
           {like > 0 ? <BiSolidLike /> : <BiLike />}
           {like > 0 ? <p>Liked</p> : <p>Like</p>}
         </button>
-        <button className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out">
-          {isShowSaved ? <IoBookmark /> : <IoBookmarkOutline />}
-          {isShowSaved ? <p>Bookmarked</p> : <p>Bookmark</p>}
+        <button
+          className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsReplyOpen(true);
+          }}
+        >
+          <MdOutlineComment />
+          <p>Comment</p>
         </button>
       </div>
 
@@ -227,6 +241,18 @@ export default function PostCard({
           handleClose={() => setEdit(null)}
           data={content}
           id={edit}
+        />
+      )}
+
+      {/* Reply Section */}
+      {isReplyOpen && (
+        <FormReply
+          handleClose={() => setIsReplyOpen(false)}
+          parentId={id}
+          parentUsername={username}
+          parentName={name}
+          parentContent={content}
+          parentPictureUrl={picture_url || ""}
         />
       )}
     </div>

@@ -32,6 +32,16 @@ interface TweetResponse {
   user: ProfileResponse;
 }
 
+interface TweetDetailResponse {
+  id: number;
+  text: string;
+  total_likes: number;
+  parent_id: string | null;
+  is_deleted: boolean;
+  user: ProfileResponse;
+  replies: TweetResponse[];
+}
+
 export interface LoginResponse {
   token: string;
 }
@@ -48,4 +58,10 @@ export function typecastProfileResponse(
 
 export function typecastTweetResponse(data: any): TweetResponse[] | undefined {
   return data as TweetResponse[] | undefined;
+}
+
+export function typecastTweetDetailResponse(
+  data: any
+): TweetDetailResponse | undefined {
+  return data as TweetDetailResponse | undefined;
 }

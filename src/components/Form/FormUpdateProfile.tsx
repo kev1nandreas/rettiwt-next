@@ -5,8 +5,7 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Input from "../Input";
 import { IoMdSend } from "react-icons/io";
-import { useGetUsername } from "@/lib/utils";
-import { useFetchProfileByUsername, useUpdateProfile } from "@/app/(main)/api/useProfile";
+import { useFetchProfileInfo, useUpdateProfile } from "@/app/(main)/api/useProfile";
 
 export default function FormUpdateProfile({
   handleClose,
@@ -18,8 +17,7 @@ export default function FormUpdateProfile({
   bio: string;
 }) {
   const divRef = useRef<HTMLDivElement>(null);
-  const username = useGetUsername();
-  const { refetch } = useFetchProfileByUsername(username as string)
+  const { refetch } = useFetchProfileInfo();
   const methods = useForm<UpdateProfileProps>({
     defaultValues: {
       name: name,
