@@ -8,6 +8,7 @@ import Sidebar from "@/containers/Sidebar";
 import RightSidebar from "@/containers/RightSidebar";
 import Header from "@/containers/Header";
 import { ProviderReduxToolkit } from "@/modules/providers/redux_provider";
+import DndWrapper from "@/modules/providers/DndWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,17 +34,19 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}
       >
-        <ProviderReduxToolkit>
-          <QueryProvider>
-            <Header />
-            <div className="flex justify-between">
-              <Sidebar />
-              <Toaster position="top-center" />
-              {children}
-              <RightSidebar />
-            </div>
-          </QueryProvider>
-        </ProviderReduxToolkit>
+        <DndWrapper>
+          <ProviderReduxToolkit>
+            <QueryProvider>
+              <Header />
+              <div className="flex justify-between">
+                <Sidebar />
+                <Toaster position="top-center" />
+                {children}
+                <RightSidebar />
+              </div>
+            </QueryProvider>
+          </ProviderReduxToolkit>
+        </DndWrapper>
       </body>
     </html>
   );

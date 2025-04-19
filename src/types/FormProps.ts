@@ -20,3 +20,7 @@ export type UpdateProfileProps = {
   bio: string;
   image: File
 };
+
+export const ItemTypes = {
+  TWEET: 'tweet',
+};

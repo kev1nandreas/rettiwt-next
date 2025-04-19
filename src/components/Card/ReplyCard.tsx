@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
@@ -14,6 +15,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useDeleteLike, useSetLike } from "@/app/(main)/api/useLike";
 import { ENV } from "@/configs/environment";
 import FormReply from "../Form/FormReply";
+import { useDrag } from "react-dnd";
+import TrashDropTarget from "../TrashDropTarget";
 
 interface PostCardProps {
   content: string;
@@ -35,11 +38,30 @@ export default function ReplyCard({
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [isLoadMore, setIsLoadMore] = useState(false);
+  const [showTrash, setShowTrash] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const [edit, setEdit] = useState<number | null>(null);
   const savedUsername = useGetUsername();
   const { postId } = useParams();
   const { refetch } = useFetchTweetbyId(postId as string, 50, 1);
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "POST_CARD",
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+    item: () => {
+      // Only show trash when this specific card is being dragged
+      if (username === savedUsername) {
+        setShowTrash(true);
+      }
+      return { id };
+    },
+    end: () => {
+      setShowTrash(false);
+    },
+  }));
 
   const removeTweet = useDeleteTweet({
     id: id,
@@ -148,13 +170,20 @@ export default function ReplyCard({
           {username === savedUsername && (
             <div className="relative">
               {/* Button Open */}
-              <HiOutlineDotsHorizontal
-                className="text-2xl cursor-pointer mr-3"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOpen(true);
-                }}
-              />
+              <div
+                ref={drag as any}
+                className={`${
+                  isDragging ? "opacity-50 cursor-grabbing" : "cursor-grab"
+                }`}
+              >
+                <HiOutlineDotsHorizontal
+                  className="text-2xl mx-3"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(true);
+                  }}
+                />
+              </div>
 
               {isOpen && (
                 <div
@@ -197,7 +226,22 @@ export default function ReplyCard({
         </div>
 
         {/* Content */}
-        <p className="m-2 text-left">{content}</p>
+        <p className="m-2 text-left">
+          {content.length > 1000 && !isLoadMore
+            ? content.slice(0, 400) + "..."
+            : content}
+          {content.length > 1000 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsLoadMore(!isLoadMore);
+              }}
+              className="text-blue-500 hover:text-blue-400 duration-200 transition-all ease-in-out cursor-pointer"
+            >
+              {isLoadMore ? "Show Less" : "Read More"}
+            </button>
+          )}
+        </p>
 
         {/* Button Group */}
         <div className="flex border-t-[1px] border-slate-200 justify-evenly p-2 mt-2">
@@ -241,6 +285,8 @@ export default function ReplyCard({
           />
         )}
       </div>
+
+      {showTrash && <TrashDropTarget onDelete={handleDelete} />}
     </div>
   );
 }

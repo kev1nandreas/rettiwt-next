@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
@@ -18,6 +19,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useDeleteLike, useSetLike } from "@/app/(main)/api/useLike";
 import { ENV } from "@/configs/environment";
 import FormReply from "../Form/FormReply";
+import TrashDropTarget from "../TrashDropTarget";
+import { useDrag } from "react-dnd";
 
 interface PostCardProps {
   content: string;
@@ -40,6 +43,7 @@ export default function PostCard({
   const [isOpen, setIsOpen] = useState(false);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isLoadMore, setIsLoadMore] = useState(false);
+  const [showTrash, setShowTrash] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const [edit, setEdit] = useState<number | null>(null);
   const savedUsername = useGetUsername();
@@ -50,6 +54,23 @@ export default function PostCard({
     50,
     1
   );
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: "POST_CARD",
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+    item: () => {
+      // Only show trash when this specific card is being dragged
+      if (username === savedUsername) {
+        setShowTrash(true);
+      }
+      return { id };
+    },
+    end: () => {
+      setShowTrash(false);
+    },
+  }));
 
   const removeTweet = useDeleteTweet({
     id: id,
@@ -166,13 +187,20 @@ export default function PostCard({
         {username === savedUsername && (
           <div className="relative">
             {/* Button Open */}
-            <HiOutlineDotsHorizontal
-              className="text-2xl cursor-pointer mr-3"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsOpen(true);
-              }}
-            />
+            <div
+              ref={drag as any}
+              className={`${
+                isDragging ? "opacity-50 cursor-grabbing" : "cursor-grab"
+              }`}
+            >
+              <HiOutlineDotsHorizontal
+                className="text-2xl mx-3"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen(true);
+                }}
+              />
+            </div>
 
             {isOpen && (
               <div
@@ -216,7 +244,9 @@ export default function PostCard({
 
       {/* Content */}
       <p className="m-2 text-left">
-        {content.length > 1000 && !isLoadMore ? content.slice(0, 400) + "..." : content}
+        {content.length > 1000 && !isLoadMore
+          ? content.slice(0, 400) + "..."
+          : content}
         {content.length > 1000 && (
           <button
             onClick={(e) => {
@@ -271,6 +301,8 @@ export default function PostCard({
           parentPictureUrl={picture_url || ""}
         />
       )}
+
+      {showTrash && <TrashDropTarget onDelete={handleDelete} />}
     </div>
   );
 }
