@@ -9,7 +9,7 @@ import LoadingComp from "@/components/Loading";
 
 export default function Profile() {
   const username = useParams().username;
-  const { data, isLoading } = useFetchTweetbyUsername(username as string, 1, 50);
+  const { data, isLoading } = useFetchTweetbyUsername(username as string, 50, 1);
   const tweets = typecastTweetResponse(data?.data);
 
   return (

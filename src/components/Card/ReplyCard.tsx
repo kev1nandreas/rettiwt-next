@@ -39,7 +39,7 @@ export default function ReplyCard({
   const [edit, setEdit] = useState<number | null>(null);
   const savedUsername = useGetUsername();
   const { postId } = useParams();
-  const { refetch } = useFetchTweetbyId(postId as string, 1, 50);
+  const { refetch } = useFetchTweetbyId(postId as string, 50, 1);
 
   const removeTweet = useDeleteTweet({
     id: id,

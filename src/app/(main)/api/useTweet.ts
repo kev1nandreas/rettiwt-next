@@ -59,8 +59,8 @@ export const useFetchTweetbyUsername = (
 
 export const useFetchTweetbyId = (
   id: string,
-  page: number,
   per_page: number,
+  page: number,
   search?: string,
   onSuccess?: () => void,
   onError?: () => void

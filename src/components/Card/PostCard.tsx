@@ -39,15 +39,16 @@ export default function PostCard({
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
+  const [isLoadMore, setIsLoadMore] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const [edit, setEdit] = useState<number | null>(null);
   const savedUsername = useGetUsername();
-  const { refetch: refetchAll } = useFetchTweet(1, 50);
+  const { refetch: refetchAll } = useFetchTweet(50, 1);
   const { username: paramsUsername } = useParams();
   const { refetch: refetchUsername } = useFetchTweetbyUsername(
     paramsUsername as string,
-    1,
     50,
+    1
   );
 
   const removeTweet = useDeleteTweet({
@@ -214,7 +215,20 @@ export default function PostCard({
       </div>
 
       {/* Content */}
-      <p className="m-2 text-left">{content}</p>
+      <p className="m-2 text-left">
+        {content.length > 1000 && !isLoadMore ? content.slice(0, 400) + "..." : content}
+        {content.length > 1000 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsLoadMore(!isLoadMore);
+            }}
+            className="text-blue-500 hover:text-blue-400 duration-200 transition-all ease-in-out cursor-pointer"
+          >
+            {isLoadMore ? "Show Less" : "Read More"}
+          </button>
+        )}
+      </p>
 
       {/* Button Group */}
       <div className="flex border-t-[1px] border-slate-200 justify-evenly p-2 mt-2">

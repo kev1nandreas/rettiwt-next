@@ -11,7 +11,7 @@ import LoadingComp from "@/components/Loading";
 
 export default function PostPage() {
   const { postId } = useParams();
-  const { data, isLoading } = useFetchTweetbyId(postId as string, 1, 50);
+  const { data, isLoading } = useFetchTweetbyId(postId as string, 50, 1);
   const tweet = typecastTweetDetailResponse(data?.data);
   const threads =
     tweet?.replies
