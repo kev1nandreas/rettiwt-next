@@ -30,8 +30,8 @@ export default function FormReply({
 }) {
   const { postId } = useParams();
   const divRef = useRef<HTMLDivElement>(null);
-  const { refetch } = useFetchTweet();
-  const { refetch: refetchByPostId } = useFetchTweetbyId(postId as string);
+  const { refetch } = useFetchTweet(50, 1);
+  const { refetch: refetchByPostId } = useFetchTweetbyId(postId as string, 50, 1);
   const methods = useForm<TweetProps>();
   const { register } = methods;
   const router = useRouter();

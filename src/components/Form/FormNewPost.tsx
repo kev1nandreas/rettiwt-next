@@ -12,7 +12,7 @@ export default function FormNewPost({
   handleClose: () => void;
 }) {
   const divRef = useRef<HTMLDivElement>(null);
-  const { refetch } = useFetchTweet();
+  const { refetch } = useFetchTweet(50, 1);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
