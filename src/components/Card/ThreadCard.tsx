@@ -149,7 +149,7 @@ export default function ThreadCard({
                 width={100}
                 height={100}
                 draggable={false}
-                className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+                className="w-[2.5rem] h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
               />
             ) : (
               <Image
@@ -158,7 +158,7 @@ export default function ThreadCard({
                 width={100}
                 height={100}
                 draggable={false}
-                className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+                className="w-[2.5rem] h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
               />
             )}
             <div className="flex justify-center flex-col">
