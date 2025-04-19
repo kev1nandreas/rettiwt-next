@@ -136,7 +136,7 @@ export default function ThreadCard({
         {/* Info Sender */}
         <div className="flex justify-between items-center">
           <div
-            className="flex align-center cursor-pointer"
+            className="flex align-center cursor-pointer gap-2"
             onClick={(e) => {
               e.stopPropagation();
               router.push("/" + username);
