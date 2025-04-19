@@ -16,7 +16,7 @@ export default function MenuSidebar({
 
   return (
     <div
-      className={`flex gap-3 p-3 md:px-5 hover:text-blue-400 cursor-pointer select-none duration-300 transition-all ease-in-out rounded-lg md:hover:bg-slate-100 ${
+      className={`flex gap-3 p-3 md:px-5 hover:text-blue-400 cursor-pointer select-none duration-300 transition-all ease-in-out rounded-lg md:hover:bg-slate-100 items-center justify-center md:justify-start ${
         isActive ? "bg-slate-100 text-blue-400" : ""
       }`}
       onClick={() => window.location.replace(location)}
