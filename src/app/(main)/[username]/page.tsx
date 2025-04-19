@@ -9,7 +9,7 @@ import LoadingComp from "@/components/Loading";
 
 export default function Profile() {
   const username = useParams().username;
-  const { data, isLoading } = useFetchTweetbyUsername(username as string);
+  const { data, isLoading } = useFetchTweetbyUsername(username as string, 1, 50);
   const tweets = typecastTweetResponse(data?.data);
 
   return (
@@ -33,11 +33,9 @@ export default function Profile() {
             !tweet.is_deleted && (
               <PostCard
                 key={tweet.id}
-                date={"13-4-35"}
                 content={tweet.text}
                 like={tweet.total_likes}
                 id={tweet.id}
-                isSaved={false}
                 name={tweet.user.name}
                 username={tweet.user.username}
                 picture_url={tweet.user.image_url || ""}

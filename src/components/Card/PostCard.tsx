@@ -42,10 +42,12 @@ export default function PostCard({
   const divRef = useRef<HTMLDivElement>(null);
   const [edit, setEdit] = useState<number | null>(null);
   const savedUsername = useGetUsername();
-  const { refetch: refetchAll } = useFetchTweet();
+  const { refetch: refetchAll } = useFetchTweet(1, 50);
   const { username: paramsUsername } = useParams();
   const { refetch: refetchUsername } = useFetchTweetbyUsername(
-    paramsUsername as string
+    paramsUsername as string,
+    1,
+    50,
   );
 
   const removeTweet = useDeleteTweet({

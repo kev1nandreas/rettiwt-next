@@ -5,24 +5,73 @@ import Image from "next/image";
 import { IoMdSend } from "react-icons/io";
 import PostCard from "@/components/Card/PostCard";
 import { useFetchTweet, useNewTweet } from "@/app/(main)/api/useTweet";
-import { typecastTweetResponse } from "@/types/response";
+import { TweetResponse, typecastTweetResponse } from "@/types/response";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { TweetProps } from "@/types/FormProps";
 import toast from "react-hot-toast";
 import LoadingComp from "@/components/Loading";
 import { useGetPicture } from "@/lib/utils";
 import { ENV } from "@/configs/environment";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function MainSection() {
-  const { data, refetch, isLoading } = useFetchTweet();
-  const tweets = typecastTweetResponse(data?.data);
+  const [page, setPage] = useState(1);
+  const [limit] = useState(20);
+  const [tweets, setTweets] = useState<TweetResponse[]>([]);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const { data, refetch, isLoading } = useFetchTweet(limit, page);
   const methods = useForm<TweetProps>();
   const { register, reset } = methods;
   const picture = useGetPicture();
 
+  const { ref, inView } = useInView({
+    threshold: 0.1,
+  });
+
+  useEffect(() => {
+    if (data?.data) {
+      const newTweets = typecastTweetResponse(data.data) || [];
+
+      if (newTweets.filter((tweet) => !tweet.is_deleted).length == 0) {
+        setHasMore(false);
+        return;
+      }
+
+      if (isLoading && page === 1) {
+        setTweets(newTweets);
+      } else {
+        setTweets((prevTweets) => {
+          const uniqueNewTweets = newTweets.filter(
+            (newTweet) =>
+              !prevTweets.some(
+                (existingTweet) => existingTweet.id === newTweet.id
+              )
+          );
+          return [...prevTweets, ...uniqueNewTweets];
+        });
+      }
+
+      setTimeout(() => {
+        setIsLoadingMore(false);
+      }, 1000);
+    }
+  }, [data?.data, isLoading, page]);
+
+  useEffect(() => {
+    if (inView && hasMore && !isLoadingMore && !isLoading) {
+      setIsLoadingMore(true);
+      setPage((prevPage) => prevPage + 1);
+    }
+  }, [inView, hasMore, isLoadingMore, isLoading]);
+
   const mutation = useNewTweet({
     onSuccess: () => {
       toast.success("Tweet created successfully!");
+      setPage(1);
+      setTweets([]);
       refetch();
       reset();
     },
@@ -99,27 +148,36 @@ export default function MainSection() {
       </div>
 
       {/* Post */}
-      {/* Loading */}
-      {isLoading && <LoadingComp />}
+      {/* Initial Loading */}
+      {isLoading && tweets.length === 0 && <LoadingComp />}
 
-      {!isLoading && (
-        <div className="flex flex-col gap-4 w-full">
-          {tweets?.map(
-            (tweet) =>
-              !tweet.is_deleted && (
-                <PostCard
-                  key={tweet.id}
-                  content={tweet.text}
-                  like={tweet.total_likes}
-                  id={tweet.id}
-                  name={tweet.user.name}
-                  username={tweet.user.username}
-                  picture_url={tweet.user.image_url || ""}
-                />
-              )
-          )}
-        </div>
-      )}
+      {/* Posts List */}
+      <div className="flex flex-col gap-4 w-full">
+        {tweets?.map(
+          (tweet) =>
+            !tweet.is_deleted && (
+              <PostCard
+                key={tweet.id}
+                content={tweet.text}
+                like={tweet.total_likes}
+                id={tweet.id}
+                name={tweet.user.name}
+                username={tweet.user.username}
+                picture_url={tweet.user.image_url || ""}
+              />
+            )
+        )}
+      </div>
+
+      {/* Observer and load more indicator */}
+      <div ref={ref} className="h-8 flex justify-center">
+        {isLoadingMore && hasMore && (
+          <div className="text-sm text-gray-500">Loading more posts...</div>
+        )}
+        {!hasMore && tweets.length > 0 && (
+          <div className="text-sm text-gray-500">No more posts to load</div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,19 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type PaginationType = {
-  Total: number;
-  Limit: number;
-  PageCurrent: number;
-  PageTotal: number;
-};
-
-export type ResponseMeta<T> = {
-  Message: string;
-  Results: {
-    Status: boolean;
-    Data: T;
-    Pagination?: PaginationType;
-  };
-};
+export interface PaginationResponse {
+  page: number;
+  per_page: number;
+  max_page: number;
+  count: number;
+}
 
 interface ProfileResponse {
   id: string;
@@ -23,7 +14,7 @@ interface ProfileResponse {
   bio: string | null;
 }
 
-interface TweetResponse {
+export interface TweetResponse {
   id: number;
   text: string;
   total_likes: number;
@@ -32,7 +23,7 @@ interface TweetResponse {
   user: ProfileResponse;
 }
 
-interface TweetDetailResponse {
+export interface TweetDetailResponse {
   id: number;
   text: string;
   total_likes: number;
@@ -44,6 +35,12 @@ interface TweetDetailResponse {
 
 export interface LoginResponse {
   token: string;
+}
+
+export function typecastPaginationResponse(
+  data: any
+): PaginationResponse | undefined {
+  return data as PaginationResponse | undefined;
 }
 
 export function typecastLoginResponse(data: any): LoginResponse | undefined {

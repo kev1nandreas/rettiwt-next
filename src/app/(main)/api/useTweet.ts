@@ -4,10 +4,18 @@ import { del, get, post, put } from "@/services/api/main/call";
 import { MAIN_ENDPOINT } from "@/services/api/main/endpoint";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-export const useFetchTweet = (onSuccess?: () => void, onError?: () => void) => {
+export const useFetchTweet = (
+  per_page: number,
+  page: number,
+  onSuccess?: () => void,
+  onError?: () => void
+) => {
   return useQuery({
     queryFn: async () => {
-      const { Kind, OK } = await get(MAIN_ENDPOINT.Tweet.GetTweet);
+      const { Kind, OK } = await get(MAIN_ENDPOINT.Tweet.GetTweet, {
+        per_page,
+        page,
+      });
       if (!OK) {
         throw new Error(
           (Kind as { message: string }).message ||
@@ -16,20 +24,26 @@ export const useFetchTweet = (onSuccess?: () => void, onError?: () => void) => {
       }
       return Kind;
     },
-    queryKey: ["fetch.tweets"],
+    queryKey: ["fetch.tweets", page, per_page],
     refetchInterval: 10000,
   }) as any;
 };
 
 export const useFetchTweetbyUsername = (
   username: string,
+  per_page: number,
+  page: number,
   onSuccess?: () => void,
   onError?: () => void
 ) => {
   return useQuery({
     queryFn: async () => {
       const { Kind, OK } = await get(
-        MAIN_ENDPOINT.Tweet.GetTweetByUsername.replace(":username", username)
+        MAIN_ENDPOINT.Tweet.GetTweetByUsername.replace(":username", username),
+        {
+          per_page,
+          page,
+        }
       );
       if (!OK) {
         throw new Error(
@@ -45,13 +59,21 @@ export const useFetchTweetbyUsername = (
 
 export const useFetchTweetbyId = (
   id: string,
+  page: number,
+  per_page: number,
+  search?: string,
   onSuccess?: () => void,
   onError?: () => void
 ) => {
   return useQuery({
     queryFn: async () => {
       const { Kind, OK } = await get(
-        MAIN_ENDPOINT.Tweet.GetTweetById.replace(":id", id.toString())
+        MAIN_ENDPOINT.Tweet.GetTweetById.replace(":id", id.toString()),
+        {
+          page,
+          per_page,
+          search,
+        }
       );
       if (!OK) {
         throw new Error(
