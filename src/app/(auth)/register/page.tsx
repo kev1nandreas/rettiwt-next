@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { parseFormData } from "@/lib/utils";
 import { useRegister } from "../api/useRegister";
+import Link from "next/link";
 
 export default function Register() {
   const methods = useForm<LoginProps>();
@@ -112,9 +113,9 @@ export default function Register() {
             <div>
               <p className="mt-6 text-sm">
                 Already have an account?{" "}
-                <a href="/login" className="text-blue-500 cursor-pointer">
+                <Link href="/login" className="text-blue-500 cursor-pointer">
                   Login
-                </a>
+                </Link>
               </p>
             </div>
           </FormProvider>
