@@ -20,6 +20,8 @@ import TrashDropTarget from "../TrashDropTarget";
 
 interface PostCardProps {
   content: string;
+  count: number;
+  index: number;
   like: number;
   id: number;
   name: string;
@@ -29,6 +31,8 @@ interface PostCardProps {
 
 export default function ThreadCard({
   content,
+  count,
+  index,
   like,
   id,
   name,
@@ -127,12 +131,11 @@ export default function ThreadCard({
   }, [isOpen]);
 
   return (
-    <div className="flex justify-center w-full p-3 bg-white cursor-pointer">
-      <div className="w-3 mr-4 border-r-2 border-slate-200"></div>
-      <div
-        className="flex flex-col w-full "
-        onClick={() => router.push("/status/" + id)}
-      >
+    <div
+      className="flex px-6 justify-center w-full p-3 bg-white cursor-pointer"
+      onClick={() => router.push("/status/" + id)}
+    >
+      <div className="flex flex-col w-full">
         {/* Info Sender */}
         <div className="flex justify-between items-center">
           <div
@@ -226,43 +229,52 @@ export default function ThreadCard({
           )}
         </div>
 
-        {/* Content */}
-        <p className="m-2 text-left">
-          {content.length > 1000 && !isLoadMore
-            ? content.slice(0, 400) + "..."
-            : content}
-          {content.length > 1000 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsLoadMore(!isLoadMore);
-              }}
-              className="text-blue-500 hover:text-blue-400 duration-200 transition-all ease-in-out cursor-pointer"
-            >
-              {isLoadMore ? "Show Less" : "Read More"}
-            </button>
-          )}
-        </p>
+        <div className="flex">
+          <div
+            className={`w-3 ml-4 mr-4 border-slate-200 ${
+              count != index ? "border-l-2" : ""
+            }`}
+          />
+          <div className="flex flex-col">
+            {/* Content */}
+            <p className="m-2 text-left">
+              {content.length > 1000 && !isLoadMore
+                ? content.slice(0, 400) + "..."
+                : content}
+              {content.length > 1000 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsLoadMore(!isLoadMore);
+                  }}
+                  className="text-blue-500 hover:text-blue-400 duration-200 transition-all ease-in-out cursor-pointer"
+                >
+                  {isLoadMore ? "Show Less" : "Read More"}
+                </button>
+              )}
+            </p>
 
-        {/* Button Group */}
-        <div className="flex border-t-[1px] border-slate-200 justify-evenly p-2 mt-2">
-          <button
-            className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
-            onClick={(e) => handleLike(e)}
-          >
-            {like > 0 ? <BiSolidLike /> : <BiLike />}
-            {like > 0 ? <p>Liked</p> : <p>Like</p>}
-          </button>
-          <button
-            className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsReplyOpen(true);
-            }}
-          >
-            <MdOutlineComment />
-            <p>Comment</p>
-          </button>
+            {/* Button Group */}
+            <div className="flex border-t-[1px] border-slate-200 justify-evenly p-2 mt-2">
+              <button
+                className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
+                onClick={(e) => handleLike(e)}
+              >
+                {like > 0 ? <BiSolidLike /> : <BiLike />}
+                {like > 0 ? <p>Liked</p> : <p>Like</p>}
+              </button>
+              <button
+                className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsReplyOpen(true);
+                }}
+              >
+                <MdOutlineComment />
+                <p>Comment</p>
+              </button>
+            </div>
+          </div>
         </div>
 
         {/* Edit Section */}
@@ -286,7 +298,6 @@ export default function ThreadCard({
           />
         )}
       </div>
-      <div className="w-3 mr-4"></div>
 
       {showTrash && <TrashDropTarget onDelete={handleDelete} />}
     </div>

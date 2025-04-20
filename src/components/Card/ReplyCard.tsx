@@ -127,7 +127,7 @@ export default function ReplyCard({
   }, [isOpen]);
 
   return (
-    <div className="flex justify-center w-full p-3 bg-white cursor-pointer">
+    <div className="flex justify-center w-full p-3 bg-white cursor-pointer rounded-lg">
       <div
         className="flex flex-col w-full "
         onClick={() => router.push("/status/" + id)}

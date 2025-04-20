@@ -3,11 +3,11 @@
 import { typecastTweetDetailResponse } from "@/types/response";
 import { useFetchTweetbyId } from "../../api/useTweet";
 import { useParams } from "next/navigation";
-import PostCard from "@/components/Card/PostCard";
 import ThreadCard from "@/components/Card/ThreadCard";
 import ReplyCard from "@/components/Card/ReplyCard";
 import { FaArrowLeft } from "react-icons/fa";
 import LoadingComp from "@/components/Loading";
+import MainThread from "@/components/Card/MainThread";
 
 export default function PostPage() {
   const { postId } = useParams();
@@ -46,7 +46,7 @@ export default function PostPage() {
 
       {/* Post */}
       {!isLoading && (
-        <PostCard
+        <MainThread
           content={tweet?.text || ""}
           like={tweet?.total_likes || 0}
           id={tweet?.id ?? 0}
@@ -61,6 +61,8 @@ export default function PostPage() {
         {threads.map((thread, index) => (
           <ThreadCard
             key={index}
+            count={threads.length}
+            index={index + 1}
             content={thread.text}
             like={thread.total_likes}
             id={thread.id}
