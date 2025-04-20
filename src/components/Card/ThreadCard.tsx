@@ -229,13 +229,13 @@ export default function ThreadCard({
           )}
         </div>
 
-        <div className="flex">
+        <div className="flex w-full">
           <div
             className={`w-3 ml-4 mr-4 border-slate-200 ${
               count != index ? "border-l-2" : ""
             }`}
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full">
             {/* Content */}
             <p className="m-2 text-left">
               {content.length > 1000 && !isLoadMore

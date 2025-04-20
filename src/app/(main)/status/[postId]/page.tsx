@@ -11,6 +11,7 @@ import MainThread from "@/components/Card/MainThread";
 
 export default function PostPage() {
   const { postId } = useParams();
+  
   const { data, isLoading } = useFetchTweetbyId(postId as string, 50, 1);
   const tweet = typecastTweetDetailResponse(data?.data);
   const threads =
@@ -75,6 +76,11 @@ export default function PostPage() {
 
       {/* Replies */}
       <div className="w-full flex flex-col mt-4 gap-3">
+        {replies.length > 0 && (
+          <p className="font-semibold text-xl px-6 mb-2 text-gray-500">
+            Replies
+          </p>
+        )}
         {replies.map((reply, index) => (
           <ReplyCard
             key={index}
