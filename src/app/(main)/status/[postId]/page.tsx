@@ -28,7 +28,7 @@ export default function PostPage() {
       .reverse() || [];
 
   return (
-    <div className="relative flex flex-col w-full items-center flex-1 px-3  h-[calc(100vh-3.5rem)] overflow-y-scroll">
+    <div className="relative flex flex-col w-full items-center flex-1 px-3  h-[calc(100vh-3.5rem)] overflow-y-auto">
       {/* Back */}
       <div
         className="sticky top-0 bg-white -mt-3 p-2 py-4 flex gap-5 px-6 items-center cursor-pointer text-2xl font-semibold w-full"

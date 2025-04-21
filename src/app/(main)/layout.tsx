@@ -9,6 +9,7 @@ import RightSidebar from "@/containers/RightSidebar";
 import Header from "@/containers/Header";
 import { ProviderReduxToolkit } from "@/modules/providers/redux_provider";
 import DndWrapper from "@/modules/providers/DndWrapper";
+import { TopButton } from "@/components/TopButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,7 @@ export default function RootLayout({
                 {children}
                 <RightSidebar />
               </div>
+              <TopButton />
             </QueryProvider>
           </ProviderReduxToolkit>
         </DndWrapper>

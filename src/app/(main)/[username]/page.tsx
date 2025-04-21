@@ -13,7 +13,7 @@ export default function Profile() {
   const tweets = typecastTweetResponse(data?.data);
 
   return (
-    <div className="flex flex-col gap-5 w-full items-center flex-1 p-3 h-[calc(100vh-3.5rem)] overflow-y-scroll">
+    <div className="flex flex-col gap-5 w-full items-center flex-1 p-3 h-[calc(100vh-3.5rem)] overflow-y-auto">
       <ProfileHeader />
 
       {/* Loading */}
