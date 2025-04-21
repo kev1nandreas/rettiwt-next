@@ -77,7 +77,7 @@ export default function FormReply({
       >
         <div className="flex justify-between items-center">
           <div
-            className="flex align-center cursor-pointer"
+            className="flex align-center cursor-pointer gap-2"
             onClick={() => router.push("/" + parentUsername)}
           >
             {parentPictureUrl ? (
@@ -87,7 +87,7 @@ export default function FormReply({
                 width={100}
                 height={100}
                 draggable={false}
-                className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+                className="w-[2.5rem] h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
               />
             ) : (
               <Image
@@ -96,7 +96,7 @@ export default function FormReply({
                 width={100}
                 height={100}
                 draggable={false}
-                className="md:w-[2.5rem] md:h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
+                className="w-[2.5rem] h-[2.5rem] rounded-full md:m-2 pointer-events-none select-none"
               />
             )}
             <div className="flex justify-center flex-col">
