@@ -44,10 +44,11 @@ export default function MainThread({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const [isLoadMore, setIsLoadMore] = useState(false);
   const [showTrash, setShowTrash] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   const divRef = useRef<HTMLDivElement>(null);
   const [edit, setEdit] = useState<number | null>(null);
   const savedUsername = useGetUsername();
-  const { refetch: refetchAll } = useFetchTweet(50, 1);
+  const { refetch: refetchAll } = useFetchTweet(10, 1);
   const { username: paramsUsername } = useParams();
   const { refetch: refetchUsername } = useFetchTweetbyUsername(
     paramsUsername as string,
@@ -90,6 +91,7 @@ export default function MainThread({
     id: id,
     onSuccess: () => {
       refetchAll();
+      setIsLiked(true);
       if (paramsUsername) {
         refetchUsername();
       }
@@ -103,6 +105,7 @@ export default function MainThread({
     id: id,
     onSuccess: () => {
       refetchAll();
+      setIsLiked(false);
       if (paramsUsername) {
         refetchUsername();
       }
@@ -119,7 +122,7 @@ export default function MainThread({
 
   const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
-    if (like > 0) {
+    if (isLiked) {
       unlikeTweet.mutateAsync();
     } else {
       likeTweet.mutateAsync(new FormData());
@@ -266,8 +269,8 @@ export default function MainThread({
           className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
           onClick={(e) => handleLike(e)}
         >
-          {like > 0 ? <BiSolidLike /> : <BiLike />}
-          {like > 0 ? <p>Liked</p> : <p>Like</p>}
+          {isLiked ? <BiSolidLike /> : <BiLike />}
+          <p>{like} Like</p>
         </button>
         <button
           className="flex gap-2 justify-center items-center cursor-pointer hover:text-blue-400 duration-200 transition-all ease-in-out"
