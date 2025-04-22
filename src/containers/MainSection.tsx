@@ -5,7 +5,6 @@ import Image from "next/image";
 import { IoMdSend } from "react-icons/io";
 import PostCard from "@/components/Card/PostCard";
 import { useFetchTweet, useNewTweet } from "@/app/(main)/api/useTweet";
-import { TweetResponse, typecastTweetResponse } from "@/types/response";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { TweetProps } from "@/types/FormProps";
 import toast from "react-hot-toast";
@@ -17,12 +16,18 @@ import { useInView } from "react-intersection-observer";
 
 export default function MainSection() {
   const [page, setPage] = useState(1);
-  const [limit] = useState(20);
-  const [tweets, setTweets] = useState<TweetResponse[]>([]);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [limit] = useState(10);
 
-  const { data, refetch, isLoading } = useFetchTweet(limit, page);
+  const {
+    data,
+    refetch,
+    isLoading,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useFetchTweet(limit, page);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const tweets = data?.pages || [];
   const methods = useForm<TweetProps>();
   const { register, reset } = methods;
   const picture = useGetPicture();
@@ -32,46 +37,19 @@ export default function MainSection() {
   });
 
   useEffect(() => {
-    if (data?.data) {
-      const newTweets = typecastTweetResponse(data.data) || [];
-
-      if (newTweets.filter((tweet) => !tweet.is_deleted).length == 0) {
-        setHasMore(false);
-        return;
-      }
-
-      if (isLoading && page === 1) {
-        setTweets(newTweets);
-      } else {
-        setTweets((prevTweets) => {
-          const uniqueNewTweets = newTweets.filter(
-            (newTweet) =>
-              !prevTweets.some(
-                (existingTweet) => existingTweet.id === newTweet.id
-              )
-          );
-          return [...prevTweets, ...uniqueNewTweets];
-        });
-      }
-
-      setTimeout(() => {
-        setIsLoadingMore(false);
-      }, 1000);
+    if (inView && hasNextPage && !isFetchingNextPage && !isLoading) {
+      fetchNextPage();
     }
-  }, [data?.data, isLoading, page]);
+  }, [inView, hasNextPage, isFetchingNextPage, isLoading, fetchNextPage]);
 
   useEffect(() => {
-    if (inView && hasMore && !isLoadingMore && !isLoading) {
-      setIsLoadingMore(true);
-      setPage((prevPage) => prevPage + 1);
-    }
-  }, [inView, hasMore, isLoadingMore, isLoading]);
+    console.log("Tweets", data);
+  }, [tweets, data]);
 
   const mutation = useNewTweet({
     onSuccess: () => {
       toast.success("Tweet created successfully!");
       setPage(1);
-      setTweets([]);
       refetch();
       reset();
     },
@@ -153,28 +131,30 @@ export default function MainSection() {
 
       {/* Posts List */}
       <div className="flex flex-col gap-4 w-full">
-        {tweets?.map(
-          (tweet) =>
-            !tweet.is_deleted && (
-              <PostCard
-                key={tweet.id}
-                content={tweet.text}
-                like={tweet.total_likes}
-                id={tweet.id}
-                name={tweet.user.name}
-                username={tweet.user.username}
-                picture_url={tweet.user.image_url || ""}
-              />
-            )
+        {tweets.map((page: { Kind: { data: any[] } }) =>
+          page.Kind.data.map(
+            (tweet) =>
+              !tweet.is_deleted && (
+                <PostCard
+                  key={tweet.id}
+                  content={tweet.text}
+                  like={tweet.total_likes}
+                  id={tweet.id}
+                  name={tweet.user.name}
+                  username={tweet.user.username}
+                  picture_url={tweet.user.image_url || ""}
+                />
+              )
+          )
         )}
       </div>
 
       {/* Observer and load more indicator */}
       <div ref={ref} className="h-8 flex justify-center">
-        {isLoadingMore && hasMore && (
+        {isFetchingNextPage && hasNextPage && (
           <div className="text-sm text-gray-500">Loading more posts...</div>
         )}
-        {!hasMore && tweets.length > 0 && (
+        {!hasNextPage && tweets.length > 0 && (
           <div className="text-sm text-gray-500">No more posts to load</div>
         )}
       </div>

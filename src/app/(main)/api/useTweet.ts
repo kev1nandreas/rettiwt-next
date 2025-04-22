@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { del, get, post, put } from "@/services/api/main/call";
 import { MAIN_ENDPOINT } from "@/services/api/main/endpoint";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query";
 
 export const useFetchTweet = (
   per_page: number,
@@ -10,11 +10,11 @@ export const useFetchTweet = (
   onSuccess?: () => void,
   onError?: () => void
 ) => {
-  return useQuery({
-    queryFn: async () => {
+  return useInfiniteQuery({
+    queryFn: async ({ pageParam = 1 }) => {
       const { Kind, OK } = await get(MAIN_ENDPOINT.Tweet.GetTweet, {
         per_page,
-        page,
+        page: pageParam,
       });
       if (!OK) {
         throw new Error(
@@ -22,10 +22,16 @@ export const useFetchTweet = (
             (Kind as { Message: string }).Message
         );
       }
-      return Kind;
+      return { Kind, nextPage: pageParam + 1 };
     },
-    queryKey: ["fetch.tweets", page, per_page],
-    refetchInterval: 10000,
+    queryKey: ["fetch.tweets.infinite", per_page],
+    refetchInterval: 20000,
+    initialPageParam: page,
+    getNextPageParam: (lastPage) =>
+      lastPage.nextPage >
+      (lastPage.Kind as { meta: { max_page: number } }).meta.max_page
+        ? undefined
+        : lastPage.nextPage,
   }) as any;
 };
 
